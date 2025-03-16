@@ -6,9 +6,15 @@ import { useSession } from "next-auth/react";
 
 const Home = () => {
   const { data: session } = useSession();
-  const currentFeedbacks = 213;
-  const targetFeedbacks = 300;
-  const percentage = Math.round((currentFeedbacks / targetFeedbacks) * 100);
+  const currentFeedbacks = 0;
+  const targetFeedbacks = 0;
+  const percentage = targetFeedbacks
+    ? Math.round((currentFeedbacks / targetFeedbacks) * 100)
+    : 0;
+  const progressColor =
+    currentFeedbacks === 0
+      ? "#9CA3AF"
+      : `rgba(59, 130, 246, ${percentage / 100})`;
 
   const [chartHeight, setChartHeight] = useState(224);
   const [chartBarWidth, setChartBarWidth] = useState(40); // default ~ w-10 (2.5rem ~ 40px)
@@ -42,7 +48,9 @@ const Home = () => {
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="px-8 py-6 bg-white shadow-sm rounded-lg">
             {session ? (
-              <h2 className="text-2xl font-medium text-gray-700 mb-4">Welcome, {session.user.name}</h2>
+              <h2 className="text-2xl font-medium text-gray-700 mb-4">
+                Welcome, {session.user.name}
+              </h2>
             ) : (
               <h2 className="text-2xl font-medium text-gray-700 mb-4">
                 Welcome, User
@@ -60,7 +68,7 @@ const Home = () => {
                     text={`${currentFeedbacks}`}
                     styles={buildStyles({
                       textSize: "24px",
-                      pathColor: `rgba(59, 130, 246, ${percentage / 100})`,
+                      pathColor: progressColor,
                       textColor: "#4B5563",
                       trailColor: "#E5E7EB",
                       strokeLinecap: "round",
@@ -76,33 +84,33 @@ const Home = () => {
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <p className="text-gray-600 mb-1">Neutral Comments - 32%</p>
+                    <p className="text-gray-600 mb-1">Neutral Comments - 0%</p>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
                         className="bg-gray-400 h-3 rounded-full"
-                        style={{ width: "32%" }}
+                        style={{ width: "0%" }}
                       ></div>
                     </div>
                   </div>
                   <div>
                     <p className="text-gray-600 mb-1">
-                      Positive Feedbacks - 65%
+                      Positive Feedbacks - 0%
                     </p>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
                         className="bg-gray-500 h-3 rounded-full"
-                        style={{ width: "65%" }}
+                        style={{ width: "0%" }}
                       ></div>
                     </div>
                   </div>
                   <div>
                     <p className="text-gray-600 mb-1">
-                      Negative Feedbacks - 3%
+                      Negative Feedbacks - 0%
                     </p>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <div
                         className="bg-gray-600 h-3 rounded-full"
-                        style={{ width: "3%" }}
+                        style={{ width: "0%" }}
                       ></div>
                     </div>
                   </div>
@@ -115,10 +123,10 @@ const Home = () => {
                 </h3>
                 {(() => {
                   const weeks = [
-                    { label: "3 Weeks Ago", value: 170, color: "bg-gray-400" },
-                    { label: "2 Weeks Ago", value: 200, color: "bg-gray-500" },
-                    { label: "Last Week", value: 240, color: "bg-gray-600" },
-                    { label: "This Week", value: 213, color: "bg-gray-700" },
+                    { label: "3 Weeks Ago", value: 0, color: "bg-gray-400" },
+                    { label: "2 Weeks Ago", value: 0, color: "bg-gray-500" },
+                    { label: "Last Week", value: 0, color: "bg-gray-600" },
+                    { label: "This Week", value: 0, color: "bg-gray-700" },
                   ];
                   const maxVal = Math.max(...weeks.map((w) => w.value));
                   return (

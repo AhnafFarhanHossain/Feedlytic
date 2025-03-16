@@ -1,11 +1,12 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import Sidebar from "./components/Sidebar";
 import SessionWrapper from "./components/SessionWrapper";
+import AddFeedbackBtn from "./components/AddFeedbackBtn";
 
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-dm-sans",
 });
 
 export const metadata = {
@@ -18,8 +19,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <SessionWrapper>
-        <body className={`${inter.variable} antialiased flex`}>
+        <body className={`${dmSans.variable} antialiased flex`}>
           <Sidebar />
+          <AddFeedbackBtn />
           {children}
         </body>
       </SessionWrapper>
