@@ -42,28 +42,30 @@ export default function page({ params }) {
     <div className="min-h-screen w-full bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-semibold text-gray-800">
             Feedback: {resolvedParams.id}
           </h1>
         </div>
       </header>
-      {/* Detail Section */}
-      <main className="max-w-4xl mx-auto my-8 p-6 bg-white shadow rounded">
-        <h2 className="text-2xl font-bold mb-4">{feedback.title}</h2>
-        <p className="mb-4 text-gray-700">{feedback.body}</p>
-        <div className="flex justify-between text-sm text-gray-500">
-          <span>By: {feedback.name}</span>
-          <span>
-            Date:{" "}
-            {new Date(feedback.created_at).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </span>
-        </div>
-      </main>
+      {/* Wrap feedback card with extra spacing */}
+      <div className="m-4">
+        <main className="max-w-4xl w-full mx-auto my-8 p-4 sm:p-6 md:p-8 bg-white shadow rounded">
+          <h2 className="text-2xl font-bold mb-4">{feedback.title}</h2>
+          <p className="mb-4 text-gray-700">{feedback.body}</p>
+          <div className="flex flex-col sm:flex-row justify-between text-sm text-gray-500">
+            <span>By: {feedback.name}</span>
+            <span>
+              Date:{" "}
+              {new Date(feedback.created_at).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </span>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

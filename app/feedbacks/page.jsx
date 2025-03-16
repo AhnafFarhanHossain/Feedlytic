@@ -19,13 +19,13 @@ const page = () => {
     <div className="min-h-screen w-full bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-semibold text-gray-800">Feedbacks</h1>
         </div>
       </header>
 
-      {/* Feedback items */}
-      <div className="max-w-[1200px] mx-auto mt-10 p-4 grid grid-cols-4 gap-6">
+      {/* Responsive grid for Feedback items */}
+      <div className="max-w-[1200px] w-full mx-auto mt-10 p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {feedbacks.map((feedback) => (
           <Link href={`/feedbacks/${feedback.id}`} key={feedback.id}>
             <div className="p-6 bg-white border border-gray-200 rounded-lg transition duration-200 cursor-pointer hover:shadow-md">
