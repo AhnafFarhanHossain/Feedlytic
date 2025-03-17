@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
+    "@tailwindcss/oxide": "^4.0.14",
     "next": "15.2.2",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
