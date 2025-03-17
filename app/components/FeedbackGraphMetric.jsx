@@ -3,6 +3,7 @@ const FeedbackGraphMetric = ({
   weeksData = [],
   chartHeight = 224,
   chartBarWidth = 40,
+  maxValue, // new prop for scaling
   height,
 }) => {
   // Ensure each week value is a valid number
@@ -10,8 +11,8 @@ const FeedbackGraphMetric = ({
     ...week,
     value: Number(week.value) || 0,
   }));
-  // Use at least 1 as the denominator to avoid division by zero
-  const maxVal = Math.max(...validWeeksData.map((week) => week.value), 1);
+  const computedMax = Math.max(...validWeeksData.map((week) => week.value), 1);
+  const maxVal = maxValue || computedMax; // use maxValue if provided
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">

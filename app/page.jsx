@@ -4,19 +4,15 @@ import { useSession } from "next-auth/react";
 import FeedbackProgressMetric from "@/app/components/FeedbackProgressMetric";
 import SentimentScoreMetric from "@/app/components/SentimentScoreMetric";
 import FeedbackGraphMetric from "@/app/components/FeedbackGraphMetric";
+import useFeedbackStats from "@/app/hooks/useFeedbackStats";
 
 const Home = () => {
   const { data: session } = useSession();
-  const currentFeedbacks = 1,
-    targetFeedbacks = 100;
+  const { totalFeedbacks, weeklyFeedbacks } = useFeedbackStats();
+  const targetFeedbacks = 100; // You may compute this or set as needed.
   const positive = 70,
     negative = 15,
     neutral = 15;
-  const weeksData = [
-    { label: "3 Weeks Ago", value: 5, color: "bg-gray-400" },
-    { label: "2 Weeks Ago", value: 8, color: "bg-blue-400" },
-    { label: "Last Week", value: 10, color: "bg-green-400" },
-  ];
 
   const [chartHeight, setChartHeight] = useState(224);
   const [chartBarWidth, setChartBarWidth] = useState(40);
@@ -62,7 +58,7 @@ const Home = () => {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <FeedbackProgressMetric
-                currentFeedbacks={currentFeedbacks}
+                currentFeedbacks={totalFeedbacks}
                 targetFeedbacks={targetFeedbacks}
               />
               <SentimentScoreMetric
@@ -71,9 +67,10 @@ const Home = () => {
                 neutral={neutral}
               />
               <FeedbackGraphMetric
-                weeksData={weeksData}
+                weeksData={weeklyFeedbacks}
                 chartHeight={chartHeight}
                 chartBarWidth={chartBarWidth}
+                maxValue={targetFeedbacks} // new: scale bars based on target feedbacks
               />
             </div>
           </div>

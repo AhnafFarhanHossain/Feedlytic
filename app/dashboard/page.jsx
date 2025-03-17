@@ -1,25 +1,20 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import FeedbackGraphMetric from "../components/FeedbackGraphMetric";
 import FeedbackProgressMetric from "../components/FeedbackProgressMetric";
 import SentimentScoreMetric from "../components/SentimentScoreMetric";
-import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 import AddFeedbackBtn from "../components/AddFeedbackBtn";
+import useFeedbackStats from "@/app/hooks/useFeedbackStats";
 
 const Dashboard = () => {
-  const currentFeedbacks = 1,
-    targetFeedbacks = 100;
-
+  // Use hook for dynamic metrics
+  const { totalFeedbacks, weeklyFeedbacks } = useFeedbackStats();
+  const targetFeedbacks = 100; // Adjust as needed
   const positive = 70,
     negative = 15,
     neutral = 15;
-
-  const weeksData = [
-    { label: "3 Weeks Ago", value: 5, color: "bg-gray-400" },
-    { label: "2 Weeks Ago", value: 8, color: "bg-blue-400" },
-    { label: "Last Week", value: 10, color: "bg-green-400" },
-  ];
 
   const [chartHeight, setChartHeight] = useState(224);
   const [chartBarWidth, setChartBarWidth] = useState(40);
@@ -37,6 +32,21 @@ const Dashboard = () => {
     fetchFeedbacks();
   }, []);
 
+  useEffect(() => {
+    const updateChartDimensions = () => {
+      if (window.innerWidth < 640) {
+        setChartHeight(150);
+        setChartBarWidth(30);
+      } else {
+        setChartHeight(224);
+        setChartBarWidth(40);
+      }
+    };
+    updateChartDimensions();
+    window.addEventListener("resize", updateChartDimensions);
+    return () => window.removeEventListener("resize", updateChartDimensions);
+  }, []);
+
   return (
     <div className="min-h-screen w-full bg-gray-50">
       {/* Header */}
@@ -49,14 +59,15 @@ const Dashboard = () => {
       <div className="my-0 mx-auto flex flex-col md:flex-row gap-2 p-4">
         <div className="flex flex-col gap-2 items-start justify-center m-5 max-w-full md:max-w-fit">
           <FeedbackProgressMetric
-            currentFeedbacks={currentFeedbacks}
+            currentFeedbacks={totalFeedbacks}
             targetFeedbacks={targetFeedbacks}
           />
           <div className="w-full">
             <FeedbackGraphMetric
-              weeksData={weeksData}
+              weeksData={weeklyFeedbacks}
               chartHeight={chartHeight}
               chartBarWidth={chartBarWidth}
+              maxValue={targetFeedbacks} // new: scale bars based on target feedbacks
             />
           </div>
         </div>
@@ -67,7 +78,7 @@ const Dashboard = () => {
             </h1>
           </div>
           {/* Updated grid classes for responsiveness */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 max-w-[1000px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-w-[1000px]">
             {feedbacks.slice(0, 6).map((feedback) => (
               <Link href={`/feedbacks/${feedback.id}`} key={feedback.id}>
                 <div className="p-6 bg-white border border-gray-200 rounded-lg transition duration-200 cursor-pointer hover:shadow-md">

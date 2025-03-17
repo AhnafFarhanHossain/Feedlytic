@@ -135,9 +135,7 @@ const Sidebar = () => {
   const renderIcon = (icon) =>
     // Use responsive classes: w-6 h-6 on smaller devices and w-8 h-8 on md and above when sidebar is collapsed
     cloneElement(icon, {
-      className: `${icon.props.className} ${
-        !isOpen ? "w-6 h-6 md:w-8 md:h-8" : "w-5 h-5"
-      }`,
+      className: `${icon.props.className} ${!isOpen ? "w-5 h-5" : ""}`,
     });
 
   return (
