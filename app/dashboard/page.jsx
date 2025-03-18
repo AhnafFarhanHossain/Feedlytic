@@ -32,6 +32,16 @@ const Dashboard = () => {
     fetchFeedbacks();
   }, []);
 
+  // New function to delete a feedback
+  const handleDelete = async (id) => {
+    const { error } = await supabase.from("Feedbacks").delete().match({ id });
+    if (error) {
+      console.error(error);
+    } else {
+      setFeedbacks(feedbacks.filter((feedback) => feedback.id !== id));
+    }
+  };
+
   useEffect(() => {
     const updateChartDimensions = () => {
       if (window.innerWidth < 640) {
@@ -81,7 +91,25 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-w-[1000px]">
             {feedbacks.slice(0, 6).map((feedback) => (
               <Link href={`/feedbacks/${feedback.id}`} key={feedback.id}>
-                <div className="p-6 bg-white border border-gray-200 rounded-lg transition duration-200 cursor-pointer hover:shadow-md">
+                <div className="relative p-6 bg-white rounded-lg shadow-sm transform hover:shadow-md transition duration-200 cursor-pointer">
+                  {/* Delete button styled and repositioned */}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDelete(feedback.id);
+                    }}
+                    className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-400 cursor-pointer"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path>
+                    </svg>
+                  </button>
                   <h1 className="text-xl font-bold text-gray-900">
                     {feedback.title}
                   </h1>
@@ -89,7 +117,7 @@ const Dashboard = () => {
                     {feedback.email}
                   </h3>
                   <p className="text-lg text-gray-800 mb-4">{feedback.body}</p>
-                  <h3 className="text-sm text-gray-400">
+                  <h3 className="text-sm text-gray-500 italic">
                     Feedback from - {feedback.name}
                   </h3>
                 </div>

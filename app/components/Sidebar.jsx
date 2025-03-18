@@ -150,7 +150,7 @@ const Sidebar = () => {
       <div
         className={`${
           isOpen ? "w-56 md:w-64" : "w-16 md:w-20"
-        } px-2 sm:px-4 py-4 bg-white h-screen flex flex-col justify-between border-r border-gray-200 transition-all duration-300 
+        } px-2 sm:px-4 py-4 bg-white min-h-screen flex flex-col justify-between border-r border-gray-200 transition-all duration-300 
 				${
           isOpen
             ? "max-[400px]:w-full max-[400px]:fixed max-[400px]:inset-0 max-[400px]:z-50 max-[400px]:overflow-hidden"
