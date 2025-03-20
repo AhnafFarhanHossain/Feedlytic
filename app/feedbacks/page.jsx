@@ -1,10 +1,18 @@
 "use client";
 import { supabase } from "@/app/lib/supabaseClient";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const [feedbacks, setFeedbacks] = useState([]);
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const toastShown = useRef(false);
 
   useEffect(() => {
     async function fetchFeedbacks() {
@@ -24,6 +32,20 @@ const page = () => {
       setFeedbacks(feedbacks.filter((feedback) => feedback.id !== id));
     }
   };
+
+  useEffect(() => {
+    if (status === "unauthenticated" && !toastShown.current) {
+      router.push("/authentication");
+      toast.error("You need to sign in to access this page", {
+        className: "toast-custom",
+      });
+      toastShown.current = true;
+    }
+  }, [status, router]);
+
+  if (status !== "authenticated") {
+    return null;
+  }
 
   return (
     <div className="min-h-screen w-full bg-gray-50">

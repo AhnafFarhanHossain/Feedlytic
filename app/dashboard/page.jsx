@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import FeedbackGraphMetric from "../components/FeedbackGraphMetric";
 import FeedbackProgressMetric from "../components/FeedbackProgressMetric";
 import SentimentScoreMetric from "../components/SentimentScoreMetric";
@@ -7,8 +7,16 @@ import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 import AddFeedbackBtn from "../components/AddFeedbackBtn";
 import useFeedbackStats from "@/app/hooks/useFeedbackStats";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const toastShown = useRef(false);
+
   // Use hook for dynamic metrics
   const { totalFeedbacks, weeklyFeedbacks } = useFeedbackStats();
   const targetFeedbacks = 100; // Adjust as needed
@@ -19,6 +27,21 @@ const Dashboard = () => {
   const [chartHeight, setChartHeight] = useState(224);
   const [chartBarWidth, setChartBarWidth] = useState(40);
   const [feedbacks, setFeedbacks] = useState([]);
+
+  useEffect(() => {
+    if (status === "unauthenticated" && !toastShown.current) {
+      router.push("/authentication");
+      toast.error("You need to sign in to access this page", {
+        className: "toast-custom",
+      });
+      toastShown.current = true;
+    }
+  }, [status, router]);
+
+  // Don't render dashboard until session is authenticated
+  if (status !== "authenticated") {
+    return null;
+  }
 
   useEffect(() => {
     async function fetchFeedbacks() {

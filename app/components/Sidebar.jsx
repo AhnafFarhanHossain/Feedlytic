@@ -3,6 +3,7 @@ import { useState, cloneElement } from "react";
 import { usePathname } from "next/navigation"; // new import
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const navItems = [
   {
@@ -125,7 +126,9 @@ const footerNavItems = [
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [profileClick, setProfileClick] = useState(false);
   const pathname = usePathname(); // get current path
+  const { data: session } = useSession();
 
   const toggleSidebar = () => {
     setIsOpen((prev) => !prev);
@@ -236,7 +239,31 @@ const Sidebar = () => {
             })}
           </div>
         </nav>
-        <div className="text-xs text-gray-500 text-center">
+        {isOpen ? (
+          <div className="flex flex-col items-center mt-4">
+            <Image
+              src={session?.user?.image || "/dummy-profile.png"}
+              alt="Profile Picture"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+            <span className="text-sm text-gray-700 mt-2">
+              {session?.user?.name || "Guest"}
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center mt-4">
+            <Image
+              src={session?.user?.image || "/dummy-profile.png"}
+              alt="Profile Picture"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />{" "}
+          </div>
+        )}
+        <div className="text-xs text-gray-500 text-center mt-4">
           © {new Date().getFullYear()} Feedlytic
         </div>
       </div>

@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import Sidebar from "./components/Sidebar";
 import SessionWrapper from "./components/SessionWrapper";
 import AddFeedbackBtn from "./components/AddFeedbackBtn";
+import { ToastContainer } from "react-toastify";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -18,13 +19,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <SessionWrapper>
-        <body className={`${dmSans.variable} antialiased flex`}>
+      <head>{/* ... any head elements ... */}</head>
+      <body className={`${dmSans.variable} antialiased flex`}>
+        <SessionWrapper>
+          <ToastContainer position="bottom-right" autoClose={3000} />
           <Sidebar />
           <AddFeedbackBtn />
           {children}
-        </body>
-      </SessionWrapper>
+        </SessionWrapper>
+      </body>
     </html>
   );
 }

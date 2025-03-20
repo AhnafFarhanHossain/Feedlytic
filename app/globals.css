@@ -2,3 +2,11 @@
 * {
   font-family: "DM Sans", sans-serif;
 }
+/* Custom Toast Styles */
+.toast-custom {
+  background: #eee;
+  font-size: 14px;
+  padding-inline: 20px !important;
+  border-radius: 8px;
+  font-family: "DM Sans", sans-serif !important;
+}
