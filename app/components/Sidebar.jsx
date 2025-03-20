@@ -239,30 +239,32 @@ const Sidebar = () => {
             })}
           </div>
         </nav>
-        {isOpen ? (
-          <div className="flex flex-col items-center mt-4">
-            <Image
-              src={session?.user?.image || "/dummy-profile.png"}
-              alt="Profile Picture"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <span className="text-sm text-gray-700 mt-2">
-              {session?.user?.name || "Guest"}
-            </span>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center mt-4">
-            <Image
-              src={session?.user?.image || "/dummy-profile.png"}
-              alt="Profile Picture"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />{" "}
-          </div>
-        )}
+        <Link href="/profile">
+          {isOpen ? (
+            <div className="flex flex-col items-center mt-4">
+              <Image
+                src={session?.user?.image || "/dummy-profile.png"}
+                alt="Profile Picture"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+              <span className="text-sm text-gray-700 mt-2">
+                {session?.user?.name || "Guest"}
+              </span>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center mt-4">
+              <Image
+                src={session?.user?.image || "/dummy-profile.png"}
+                alt="Profile Picture"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />{" "}
+            </div>
+          )}
+        </Link>
         <div className="text-xs text-gray-500 text-center mt-4">
           © {new Date().getFullYear()} Feedlytic
         </div>
