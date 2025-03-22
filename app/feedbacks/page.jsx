@@ -7,6 +7,18 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+// Add category badge helper
+const getBadgeColor = (category) => {
+  switch (category) {
+    case "Bug Reports":
+      return "bg-red-100 text-red-800";
+    case "Feature Requests":
+      return "bg-blue-100 text-blue-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
+
 const page = () => {
   const [feedbacks, setFeedbacks] = useState([]);
 
@@ -18,7 +30,19 @@ const page = () => {
     async function fetchFeedbacks() {
       let { data, error } = await supabase.from("Feedbacks").select();
       if (error) console.error(error);
-      else setFeedbacks(data);
+      else {
+        // Merge stored category for consistency
+        const mergedData = data.map((fb) => {
+          const stored = localStorage.getItem(`feedbackCategory_${fb.id}`);
+          const category = stored
+            ? stored.trim()
+            : fb.category
+            ? fb.category.trim()
+            : "Other";
+          return { ...fb, category };
+        });
+        setFeedbacks(mergedData);
+      }
     }
     fetchFeedbacks();
   }, []);
@@ -59,11 +83,11 @@ const page = () => {
       {/* Masonry layout for Feedback items */}
       <div
         className="max-w-[1200px] w-full mx-auto mt-10 p-4 columns-1 sm:columns-2 md:columns-3 lg:columns-4"
-        style={{ columnGap: "1.5rem" }}
+        style={{ columnGap: "2rem" }}
       >
         {feedbacks.map((feedback) => (
           <Link href={`/feedbacks/${feedback.id}`} key={feedback.id}>
-            <div className="relative p-6 bg-white rounded-lg shadow-sm cursor-pointer transition-shadow duration-200 hover:shadow-md mb-6 break-inside-avoid">
+            <div className="relative p-6 bg-white rounded-lg shadow-sm cursor-pointer transition-shadow duration-200 hover:shadow-md mb-8 break-inside-avoid">
               {/* Delete button styled and repositioned */}
               <button
                 onClick={(e) => {
@@ -82,9 +106,17 @@ const page = () => {
                   <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path>
                 </svg>
               </button>
-              <h1 className="text-xl font-bold text-gray-900">
+              <h1 className="text-xl font-bold text-gray-900 mb-1">
                 {feedback.title}
               </h1>
+              {/* Badge for category */}
+              <span
+                className={`inline-block ${getBadgeColor(
+                  feedback.category
+                )} text-xs px-2 py-1 rounded-full mb-1`}
+              >
+                {feedback.category}
+              </span>
               <h3 className="text-sm text-gray-600 mb-2">{feedback.email}</h3>
               <p className="text-lg text-gray-800 mb-4">{feedback.body}</p>
               <h3 className="text-sm text-gray-500 italic">

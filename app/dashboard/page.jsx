@@ -18,6 +18,18 @@ const Dashboard = () => {
   const { data: session, status } = useSession();
   const toastShown = useRef(false);
 
+  // Add helper to choose badge color based on category
+  const getBadgeColor = (category) => {
+    switch (category) {
+      case "Bug Reports":
+        return "bg-red-100 text-red-800";
+      case "Feature Requests":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   // Use hook for dynamic metrics
   const { totalFeedbacks, weeklyFeedbacks } = useFeedbackStats();
   const targetFeedbacks = 100; // Adjust as needed
@@ -59,7 +71,19 @@ const Dashboard = () => {
         .select()
         .order("created_at", { ascending: false });
       if (error) console.error(error);
-      else setFeedbacks(data);
+      else {
+        // Merge stored category (if any) ensuring trimming for consistency
+        const mergedData = data.map((fb) => {
+          const stored = localStorage.getItem(`feedbackCategory_${fb.id}`);
+          const category = stored
+            ? stored.trim()
+            : fb.category
+            ? fb.category.trim()
+            : "Other";
+          return { ...fb, category };
+        });
+        setFeedbacks(mergedData);
+      }
     }
     fetchFeedbacks();
   }, []);
@@ -123,7 +147,7 @@ const Dashboard = () => {
                   Latest Posts
                 </h1>
               </div>
-              <div className="columns-1 sm:columns-2 lg:columns-3 gap-2 max-w-[1000px]">
+              <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-2 max-w-[1000px]">
                 {" "}
                 {/* changed container classes */}
                 {feedbacks.slice(0, 6).map((feedback) => (
@@ -152,6 +176,15 @@ const Dashboard = () => {
                       <h3 className="text-sm text-gray-600 mb-2">
                         {feedback.email}
                       </h3>
+                      {/* Updated: Dynamic Category Badge */}
+                      <span
+                        className={`inline-block ${getBadgeColor(
+                          feedback.category
+                        )} text-xs px-2 py-1 rounded-full mb-2`}
+                      >
+                        {feedback.category}
+                      </span>
+                      {/* ---------------------------------- */}
                       <p className="text-lg text-gray-800 mb-4">
                         {feedback.body}
                       </p>
@@ -191,7 +224,9 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="max-w-full mx-8 bg-white rounded-lg shadow p-6 border-gray-100">
-            <h1 className="text-xl font-bold text-gray-700">Common Categories of Feedbacks</h1>
+            <h1 className="text-xl font-bold text-gray-700">
+              Common Categories of Feedbacks
+            </h1>
             <FeedbackCategories feedbacks={feedbacks} />{" "}
             {/* Pass dynamic feedbacks */}
           </div>

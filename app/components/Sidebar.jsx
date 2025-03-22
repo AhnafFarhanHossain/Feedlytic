@@ -126,7 +126,6 @@ const footerNavItems = [
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [profileClick, setProfileClick] = useState(false);
   const pathname = usePathname(); // get current path
   const { data: session } = useSession();
 

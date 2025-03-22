@@ -2,6 +2,18 @@
 import { useState, useEffect, use } from "react";
 import { supabase } from "@/app/lib/supabaseClient";
 
+// Add category badge helper
+const getBadgeColor = (category) => {
+  switch (category) {
+    case "Bug Reports":
+      return "bg-red-100 text-red-800";
+    case "Feature Requests":
+      return "bg-blue-100 text-blue-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+};
+
 export default function page({ params }) {
   // Unwrap params using React.use() as required
   const resolvedParams = use(params);
@@ -15,7 +27,7 @@ export default function page({ params }) {
     async function fetchFeedback() {
       const { data, error } = await supabase
         .from("Feedbacks")
-        .select()
+        .select() // Ensure category is fetched if part of the record
         .eq("id", id)
         .single();
 
@@ -38,6 +50,10 @@ export default function page({ params }) {
       </div>
     );
 
+  // Merge stored category from localStorage if available
+  const stored = localStorage.getItem(`feedbackCategory_${feedback.id}`);
+  const category = stored ? stored.trim() : (feedback.category ? feedback.category.trim() : "Other");
+
   return (
     <div className="min-h-screen w-full bg-gray-50">
       {/* Header */}
@@ -52,6 +68,15 @@ export default function page({ params }) {
       <div className="m-4">
         <main className="max-w-4xl w-full mx-auto my-8 p-4 sm:p-6 md:p-8 bg-white shadow rounded">
           <h2 className="text-2xl font-bold mb-4">{feedback.title}</h2>
+          {/* Updated: Category Badge Display */}
+          <div className="mb-4">
+            <span
+              className={`inline-block ${getBadgeColor(category)} text-xs px-2 py-1 rounded-full`}
+            >
+              {category}
+            </span>
+          </div>
+          {/* End Badge Display */}
           <p className="mb-4 text-gray-700">{feedback.body}</p>
           <div className="flex flex-col sm:flex-row justify-between text-sm text-gray-500">
             <span>By: {feedback.name}</span>

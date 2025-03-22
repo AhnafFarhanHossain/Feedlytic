@@ -43,28 +43,17 @@ const renderCustomizedLabel = ({
 
 export default function FeedbackCategories({ feedbacks = [] }) {
   // now accepts feedbacks prop
-  // AI-based category determination function
-  const determineCategory = (fb) => {
-    const text = `${fb.title} ${fb.body}`.toLowerCase();
-    if (text.includes("dummy") || text.includes("test")) return "Dummy/Test";
-    if (text.includes("bug") || text.includes("error")) return "Bug Reports";
-    if (text.includes("feature") || text.includes("enhance"))
-      return "Feature Requests";
-    return "Other";
-  };
 
-  // Compute category counts from feedbacks
+  // Group feedbacks by the explicit category:
   const categoryCounts = feedbacks.reduce((acc, fb) => {
-    const category = determineCategory(fb);
-    acc[category] = (acc[category] || 0) + 1;
+    const cat = fb.category || "Other";
+    acc[cat] = (acc[cat] || 0) + 1;
     return acc;
   }, {});
 
   const total = feedbacks.length;
-  // Compute percentages for each category
   const data = Object.entries(categoryCounts).map(([name, count]) => ({
     name,
-    // In percentage, ensuring a number between 0-100
     value: total ? Math.round((count / total) * 100) : 0,
   }));
 
