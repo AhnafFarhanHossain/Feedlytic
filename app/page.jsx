@@ -5,17 +5,16 @@ import FeedbackProgressMetric from "@/app/components/FeedbackProgressMetric";
 import SentimentScoreMetric from "@/app/components/SentimentScoreMetric";
 import FeedbackGraphMetric from "@/app/components/FeedbackGraphMetric";
 import useFeedbackStats from "@/app/hooks/useFeedbackStats";
+import { supabase } from "./lib/supabaseClient";
 
 const Home = () => {
   const { data: session } = useSession();
   const { totalFeedbacks, weeklyFeedbacks } = useFeedbackStats();
   const targetFeedbacks = 100; // You may compute this or set as needed.
-  const positive = 70,
-    negative = 15,
-    neutral = 15;
 
   const [chartHeight, setChartHeight] = useState(224);
   const [chartBarWidth, setChartBarWidth] = useState(40);
+  const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
     const updateChartDimensions = () => {
@@ -30,6 +29,18 @@ const Home = () => {
     updateChartDimensions();
     window.addEventListener("resize", updateChartDimensions);
     return () => window.removeEventListener("resize", updateChartDimensions);
+  }, []);
+
+  useEffect(() => {
+    async function fetchFeedbacks() {
+      let { data, error } = await supabase
+        .from("Feedbacks")
+        .select()
+        .order("created_at", { ascending: false });
+      if (!error) setFeedbacks(data);
+      else console.error(error);
+    }
+    fetchFeedbacks();
   }, []);
 
   return (
@@ -61,11 +72,7 @@ const Home = () => {
                 currentFeedbacks={totalFeedbacks}
                 targetFeedbacks={targetFeedbacks}
               />
-              <SentimentScoreMetric
-                positive={positive}
-                negative={negative}
-                neutral={neutral}
-              />
+              <SentimentScoreMetric feedbacks={feedbacks} />
               <FeedbackGraphMetric
                 weeksData={weeklyFeedbacks}
                 chartHeight={chartHeight}

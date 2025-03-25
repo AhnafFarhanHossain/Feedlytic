@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useMemo } from "react"; // added useMemo
+import { useState, useEffect, useRef } from "react"; // removed useMemo
 import FeedbackGraphMetric from "../components/FeedbackGraphMetric";
 import FeedbackProgressMetric from "../components/FeedbackProgressMetric";
 import SentimentScoreMetric from "../components/SentimentScoreMetric";
@@ -37,22 +37,6 @@ const Dashboard = () => {
   const [chartHeight, setChartHeight] = useState(224);
   const [chartBarWidth, setChartBarWidth] = useState(40);
   const [feedbacks, setFeedbacks] = useState([]);
-
-  // Compute actual sentiment metrics from feedbacks using AI sentiment analyzer
-  const sentimentMetrics = useMemo(() => {
-    const sentimentAnalyzer = new Sentiment();
-    return feedbacks.reduce(
-      (acc, fb) => {
-        const text = `${fb.title} ${fb.body}`.toLowerCase();
-        const result = sentimentAnalyzer.analyze(text);
-        if (result.score > 0) acc.positive += 1;
-        else if (result.score < 0) acc.negative += 1;
-        else acc.neutral += 1;
-        return acc;
-      },
-      { positive: 0, negative: 0, neutral: 0 }
-    );
-  }, [feedbacks]);
 
   useEffect(() => {
     if (status === "unauthenticated" && !toastShown.current) {
@@ -197,29 +181,7 @@ const Dashboard = () => {
               </div>
               {/* updated metrics container for the pie chart with AI-based sentiment analysis */}
               <div className="w-full">
-                <SentimentScoreMetric
-                  positive={
-                    feedbacks.length
-                      ? Math.round(
-                          (sentimentMetrics.positive / feedbacks.length) * 100
-                        )
-                      : 0
-                  }
-                  negative={
-                    feedbacks.length
-                      ? Math.round(
-                          (sentimentMetrics.negative / feedbacks.length) * 100
-                        )
-                      : 0
-                  }
-                  neutral={
-                    feedbacks.length
-                      ? Math.round(
-                          (sentimentMetrics.neutral / feedbacks.length) * 100
-                        )
-                      : 0
-                  }
-                />
+                <SentimentScoreMetric feedbacks={feedbacks} />
               </div>
             </div>
           </div>
