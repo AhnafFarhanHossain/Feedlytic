@@ -33,7 +33,7 @@ function AddFeedbackBtn() {
       onClick={handleButtonClick}
       className={`p-3 ${
         needsRefresh ? "bg-primary" : "bg-primary"
-      } rounded-full text-primary-foreground font-medium cursor-pointer absolute top-4 right-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 z-50`}
+      } rounded-full text-primary-foreground font-medium cursor-pointer fixed top-5 right-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 z-50`}
       aria-label={needsRefresh ? "Refresh page" : "Add new feedback"}
     >
       {needsRefresh ? (
