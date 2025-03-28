@@ -8,25 +8,39 @@ const FeedbackProgressMetric = ({ currentFeedbacks, targetFeedbacks }) => {
     targetFeedbacks > 0
       ? Math.round((currentFeedbacks / targetFeedbacks) * 100)
       : 0;
-  const progressColor =
-    currentFeedbacks === 0 ? "#9CA3AF" : `rgba(59,130,246,${percentage / 100})`;
+
+  // Dynamic color based on percentage
+  const getProgressColor = (percent) => {
+    if (percent === 0) return "var(--color-muted-foreground)";
+    if (percent < 30) return "var(--color-chart-5)";
+    if (percent < 70) return "var(--color-chart-2)";
+    return "var(--color-chart-1)";
+  };
+
+  const progressColor = getProgressColor(percentage);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col items-center">
-      <div className="circular-wrapper">
+    <div className="bg-card p-6 rounded-xl shadow-md border border-border/40 flex flex-col items-center transition-all duration-300 hover:shadow-lg">
+      <h3 className="text-xl font-semibold text-foreground mb-4 self-start">
+        Feedback Progress
+      </h3>
+      <div className="circular-wrapper w-32 h-32 mb-2">
         <CircularProgressbar
           value={percentage}
-          text={`${currentFeedbacks}`}
+          text={`${percentage}%`}
           styles={buildStyles({
-            textSize: "24px",
+            textSize: "16px",
             pathColor: progressColor,
-            textColor: "#4B5563",
-            trailColor: "#E5E7EB",
+            textColor: "var(--color-foreground)",
+            trailColor: "var(--color-muted)",
             strokeLinecap: "round",
           })}
         />
       </div>
-      <p className="mt-2 text-sm text-gray-600">{`${currentFeedbacks} / ${targetFeedbacks} Feedbacks`}</p>
+      <p className="mt-3 text-sm font-medium text-muted-foreground">
+        <span className="text-foreground font-bold">{currentFeedbacks}</span>
+        <span> / {targetFeedbacks} Feedbacks</span>
+      </p>
     </div>
   );
 };

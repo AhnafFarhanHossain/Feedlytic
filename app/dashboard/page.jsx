@@ -100,97 +100,141 @@ const Dashboard = () => {
   return (
     <>
       {status === "authenticated" ? (
-        <div className="min-h-screen w-full bg-gray-50">
+        <div className="min-h-screen w-full bg-background">
           {/* Header */}
-          <header className="bg-white shadow-sm border-b border-gray-200">
-            <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 relative">
-              <h1 className="text-3xl font-semibold text-gray-800">
-                Dashboard
-              </h1>
+          <header className="bg-card shadow-md border-b border-border sticky top-0 z-10">
+            <div className="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8 relative">
+              <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
             </div>
           </header>
-          {/* Changed flex container: stack vertically on small devices */}
-          <div className="my-0 mx-auto flex flex-col md:flex-row gap-2 p-4">
-            <div className="flex flex-col gap-2 items-start justify-center m-5 max-w-full md:max-w-fit">
-              <FeedbackProgressMetric
-                currentFeedbacks={totalFeedbacks}
-                targetFeedbacks={targetFeedbacks}
-              />
-              <div className="w-full">
+          {/* Main content */}
+          <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left column - Metrics */}
+              <div className="lg:col-span-1 space-y-8">
+                <FeedbackProgressMetric
+                  currentFeedbacks={totalFeedbacks}
+                  targetFeedbacks={targetFeedbacks}
+                />
                 <FeedbackGraphMetric
                   weeksData={weeklyFeedbacks}
                   chartHeight={chartHeight}
                   chartBarWidth={chartBarWidth}
                   maxValue={targetFeedbacks}
                 />
-              </div>
-            </div>
-            <div className="mt-5 flex flex-col gap-2 max-w-full">
-              <div>
-                <h1 className="mb-4 text-2xl text-gray-700 font-bold">
-                  Latest Posts
-                </h1>
-              </div>
-              <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-2 max-w-[1000px]">
-                {" "}
-                {/* changed container classes */}
-                {feedbacks.slice(0, 6).map((feedback) => (
-                  <Link href={`/feedbacks/${feedback.id}`} key={feedback.id}>
-                    <div className="relative p-6 bg-white rounded-lg shadow-sm transform hover:shadow-md transition duration-200 cursor-pointer break-inside-avoid mb-4">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDelete(feedback.id);
-                        }}
-                        className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-400 cursor-pointer"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="w-4 h-4"
-                        >
-                          <path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path>
-                        </svg>
-                      </button>
-                      <h1 className="text-xl font-bold text-gray-900">
-                        {feedback.title}
-                      </h1>
-                      <h3 className="text-sm text-gray-600 mb-2">
-                        {feedback.email}
-                      </h3>
-                      {/* Updated: Dynamic Category Badge */}
-                      <span
-                        className={`inline-block ${getBadgeColor(
-                          feedback.category
-                        )} text-xs px-2 py-1 rounded-full mb-2`}
-                      >
-                        {feedback.category}
-                      </span>
-                      {/* ---------------------------------- */}
-                      <p className="text-lg text-gray-800 mb-4">
-                        {feedback.body}
-                      </p>
-                      <h3 className="text-sm text-gray-500 italic">
-                        Feedback from - {feedback.name}
-                      </h3>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              {/* updated metrics container for the pie chart with AI-based sentiment analysis */}
-              <div className="w-full">
                 <SentimentScoreMetric feedbacks={feedbacks} />
               </div>
+
+              {/* Right column - Feedback cards */}
+              <div className="lg:col-span-2 space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-foreground">
+                    Latest Feedback
+                  </h2>
+                  <Link
+                    href="/feedbacks"
+                    className="text-primary hover:text-primary/80 text-sm font-medium flex items-center transition-colors"
+                  >
+                    View all
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="ml-1 w-4 h-4"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {feedbacks.slice(0, 8).map((feedback) => (
+                    <Link href={`/feedbacks/${feedback.id}`} key={feedback.id}>
+                      <div className="relative p-6 bg-card rounded-xl shadow-md border border-border/40 transform hover:shadow-lg transition-all duration-300 cursor-pointer h-full flex flex-col">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDelete(feedback.id);
+                          }}
+                          className="absolute top-3 right-3 p-2 bg-destructive/90 text-white rounded-full hover:bg-destructive transition-colors focus:outline-none focus:ring-2 focus:ring-destructive/50"
+                          aria-label="Delete feedback"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-4 h-4"
+                          >
+                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
+                          </svg>
+                        </button>
+
+                        <div className="mb-2">
+                          <span
+                            className={`inline-block ${getBadgeColor(
+                              feedback.category
+                            )} text-xs px-2.5 py-1 rounded-full font-medium`}
+                          >
+                            {feedback.category}
+                          </span>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-foreground mb-2 line-clamp-1">
+                          {feedback.title}
+                        </h3>
+
+                        <p className="text-muted-foreground mb-4 line-clamp-3 flex-grow">
+                          {feedback.body}
+                        </p>
+
+                        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/40">
+                          <div className="flex items-center">
+                            <div className="bg-primary/10 p-1.5 rounded-full mr-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="w-3.5 h-3.5 text-primary"
+                              >
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                              </svg>
+                            </div>
+                            <span className="text-sm font-medium text-foreground">
+                              {feedback.name}
+                            </span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {feedback.email}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="max-w-full mx-8 bg-white rounded-lg shadow p-6 border-gray-100">
-            <h1 className="text-xl font-bold text-gray-700">
-              Common Categories of Feedbacks
-            </h1>
-            <FeedbackCategories feedbacks={feedbacks} />{" "}
-            {/* Pass dynamic feedbacks */}
+
+            {/* Categories section */}
+            <div className="mt-12 bg-card rounded-xl shadow-md p-8 border border-border/40">
+              <h2 className="text-2xl font-bold text-foreground mb-6">
+                Feedback Categories
+              </h2>
+              <FeedbackCategories feedbacks={feedbacks} />
+            </div>
           </div>
         </div>
       ) : null}

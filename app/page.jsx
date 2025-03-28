@@ -44,30 +44,64 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-gray-50">
+    <div className="min-h-screen w-full bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-semibold text-gray-800">Home</h1>
+      <header className="bg-card shadow-md border-b border-border sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold text-foreground">Home</h1>
         </div>
       </header>
       {/* Main content */}
       <main className="py-8">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="px-8 py-6 bg-white shadow-sm rounded-lg">
+          <div className="px-8 py-8 bg-card shadow-md rounded-xl border border-border/40">
             {session ? (
-              <h2 className="text-2xl font-medium text-gray-700 mb-4">
-                Welcome, {session.user.name}
-              </h2>
+              <div className="flex items-center mb-6">
+                <div className="mr-4 bg-primary/10 p-3 rounded-full">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-6 h-6 text-primary"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Welcome, {session.user.name}
+                </h2>
+              </div>
             ) : (
-              <h2 className="text-2xl font-medium text-gray-700 mb-4">
-                Welcome, User
-              </h2>
+              <div className="flex items-center mb-6">
+                <div className="mr-4 bg-primary/10 p-3 rounded-full">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-6 h-6 text-primary"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-foreground">
+                  Welcome, User
+                </h2>
+              </div>
             )}
-            <p className="text-gray-500 mb-8">
+            <p className="text-muted-foreground mb-8 pl-1">
               Overview of your activity and key metrics.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <FeedbackProgressMetric
                 currentFeedbacks={totalFeedbacks}
                 targetFeedbacks={targetFeedbacks}
@@ -77,7 +111,7 @@ const Home = () => {
                 weeksData={weeklyFeedbacks}
                 chartHeight={chartHeight}
                 chartBarWidth={chartBarWidth}
-                maxValue={targetFeedbacks} // new: scale bars based on target feedbacks
+                maxValue={targetFeedbacks}
               />
             </div>
           </div>
